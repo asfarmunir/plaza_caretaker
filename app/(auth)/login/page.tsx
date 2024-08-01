@@ -56,7 +56,7 @@ const page = () => {
       <div className=" max-w-5xl h-[28rem]    items-center justify-center   overflow-hidden w-full flex ">
         <Image
           src="/hero.png"
-          className=" object-cover h-full   "
+          className="hidden md:block object-cover h-full   "
           width={300}
           height={300}
           alt="login"

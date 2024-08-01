@@ -13,8 +13,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Evently",
-  description: "Events Management Application",
+  title: "Plaza service limited",
+  description: " A platform for managing your caretaking services",
   icons: {
     icon: "/assets/images/logo.svg",
   },
