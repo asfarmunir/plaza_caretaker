@@ -1,6 +1,7 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-
+import { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -10,14 +11,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuSeparator,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 // import {
 //   Pagination,
 //   PaginationContent,
@@ -40,7 +41,24 @@ import {
 // } from "@/components/ui/alert-dialog";
 import { FaAngleDown } from "react-icons/fa6";
 import { PiWarningOctagonLight } from "react-icons/pi";
-export default function Home() {
+import { ThreeDots } from "react-loader-spinner";
+import { IEmployee } from "@/lib/types";
+import { fetchAllEmployees } from "@/lib/cruds/employeeCrud";
+
+export default function Page() {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [employees, setEmployees] = useState<IEmployee[]>([]);
+
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      setLoading(true);
+      const data = await fetchAllEmployees();
+      setEmployees(data);
+      setLoading(false);
+    };
+    fetchEmployees();
+  }, []);
+
   return (
     <main className="flex flex-col items-center justify-between w-full  ">
       <div className="  p-5 px-3 md:px-6 rounded-md shadow-sm w-full">
@@ -48,7 +66,9 @@ export default function Home() {
           List of Registered Customers
         </h2>
         <Table>
-          {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
+          {!employees.length && !loading && (
+            <TableCaption className=" py-3"> No employees added</TableCaption>
+          )}
           <TableHeader className=" bg-blue-500/80">
             <TableRow>
               <TableHead className=" text-white font-bold text-center">
@@ -79,52 +99,54 @@ export default function Home() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] text-center text-slate-500 border-slate-200">
-                #1
-              </TableCell>
-              <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
-                Ahmed
-              </TableCell>
-              <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
-                ahmad@gmail.com
-              </TableCell>
-              <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
-                032042333
-              </TableCell>
-              <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
-                23/03/2004
-              </TableCell>
-              <TableCell className="font-semibold text-center border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
-                Salesman
-              </TableCell>
-              <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
-                Male
-              </TableCell>
+            {employees.map((employee, index) => (
+              <TableRow key={index}>
+                <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] text-center text-slate-500 border-slate-200">
+                  #{index + 1}
+                </TableCell>
+                <TableCell className="font-thin capitalize border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
+                  {employee.fullname}
+                </TableCell>
+                <TableCell className="font-thin  border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
+                  {employee.email}
+                </TableCell>
+                <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
+                  {employee.phoneNumber}
+                </TableCell>
+                <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
+                  {employee.dateOfBirth}
+                </TableCell>
+                <TableCell className="font-semibold capitalize text-center border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
+                  {employee.employeeType}
+                </TableCell>
+                <TableCell className="font-thin capitalize border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
+                  {employee.gender}
+                </TableCell>
 
-              {/* <TableCell className="font-thin text-center border-b pb-4 pt-4 border-slate-200">
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <FaAngleDown className="w-7 h-7 p-1.5 border border-slate-300 hover:border-slate-500 rounded-full text-slate-900" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="bg-slate-50 my-1 font-semibold text-slate-900 text-center w-full px-8 py-3">
-                      Restrict Business
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
+                <TableCell className="font-thin text-center border-b pb-4 pt-4 border-slate-200">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <FaAngleDown className="w-7 h-7 p-1.5 border border-slate-300 hover:border-slate-500 rounded-full text-slate-900" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className="bg-slate-50 my-1 font-semibold text-slate-900 text-center w-full px-8 py-3">
+                        Restrict
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
 
-                    <DropdownMenuItem className="bg-red-100 my-1 font-semibold text-red-700 text-center w-full px-8 py-3">
-                      Block Business
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell> */}
-            </TableRow>
+                      <DropdownMenuItem className="bg-red-100 my-1 font-semibold text-red-700 text-center w-full px-8 py-3">
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
-        {/* {loading && (
+        {loading && (
           <div className=" w-full flex py-4 justify-center">
             <ThreeDots
               visible={true}
@@ -137,7 +159,7 @@ export default function Home() {
               wrapperClass=""
             />
           </div>
-        )} */}
+        )}
         {/* <div className=" w-full flex items-center justify-between mt-3 gap-4">
           <p className=" font-semibold text-xs md:text-sm text-slate-800">
             Total Post: {count}

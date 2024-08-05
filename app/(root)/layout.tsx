@@ -1,18 +1,81 @@
+"use client";
 import Sidebar from "@/components/shared/Sidebar";
-import { redirect } from "next/navigation";
 import Image from "next/image";
-import { RiDashboardFill } from "react-icons/ri";
-import { FaPeopleGroup } from "react-icons/fa6";
-import { PiNewspaperFill } from "react-icons/pi";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { useAuth } from "@/lib/AuthProvider";
 
-export default async function RootLayout({
+const managerLinks = [
+  {
+    name: "List of Customers",
+    href: "/",
+  },
+  {
+    name: "List of Employees",
+    href: "/employees",
+  },
+  {
+    name: "Register New Employee",
+    href: "/register-employee",
+  },
+  {
+    name: " Register New Customer",
+    href: "/register-customer",
+  },
+  {
+    name: "Assign Customer ",
+    href: "/manager/assign-customer",
+  },
+  {
+    name: "Pending Payments",
+    href: "/manager/pending-payments",
+  },
+  {
+    name: "Pay Careworkers",
+    href: "/manager/pay-careworkers",
+  },
+];
+const ceoLinks = [
+  {
+    name: "List of Customers",
+    href: "/",
+  },
+  {
+    name: "List of Employees",
+    href: "/employees",
+  },
+  {
+    name: "Profit/Loss",
+    href: "/profit-loss",
+  },
+  {
+    name: "Total Work Hours",
+    href: "/total-work-hours",
+  },
+];
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { user } = useAuth();
+  const [role, setRole] = useState<string>("");
+  const [links, setLinks] = useState<{ name: string; href: string }[]>([]);
+
+  useEffect(() => {
+    const user = Cookies.get("userRole");
+    setRole(user!);
+    if (user === "CEO") {
+      setLinks(ceoLinks);
+    }
+    if (user === "manager") {
+      setLinks(managerLinks);
+    }
+  }, []);
+
   return (
     <main className={`h-screen  flex `}>
-      <Sidebar />
+      <Sidebar navlinks={links} employeeType={role} />
 
       <section className=" relative w-full md:w-[70%]  overflow-y-auto flex  flex-col items-start justify-start pb-3">
         <div className="flex items-center justify-center w-full py-3">

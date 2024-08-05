@@ -1,59 +1,42 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
-
-import { MdHelp } from "react-icons/md";
-import { FaArrowLeftLong } from "react-icons/fa6";
 import toast from "react-hot-toast";
 import { useRouter, usePathname } from "next/navigation";
 import { BsArrowRight } from "react-icons/bs";
+import Cookies from "js-cookie";
 
-const managerLink = [
-  {
-    name: "List of Customers",
-    href: "/",
-  },
-  {
-    name: "List of Employees",
-    href: "/employees",
-  },
-  {
-    name: "Register New Employee",
-    href: "/register-employee",
-  },
-  {
-    name: " Register New Customer",
-    href: "/register-customer",
-  },
-  {
-    name: "Assign Customer ",
-    href: "/assign-customer",
-  },
-  {
-    name: "Pending Payments",
-    href: "/pending-payments",
-  },
-  {
-    name: "Pay Careworkers",
-    href: "/pay-careworkers",
-  },
-];
 import { TbLogout2 } from "react-icons/tb";
+import { signOut } from "firebase/auth";
+import { auth } from "@/lib/firebaseConfig";
 
-const Sidebar = () => {
+const Sidebar = ({
+  navlinks,
+  employeeType,
+}: {
+  navlinks: { name: string; href: string }[];
+  employeeType: string;
+}) => {
   const router = useRouter();
   const currentPath = usePathname();
   const handleSignOut = async () => {
-    toast.success("Logged Out Successfully");
-    router.push("/login");
+    try {
+      await signOut(auth);
+      Cookies.remove("isLoggedIn");
+      Cookies.remove("userRole");
+      toast.success("User signed out");
+      router.push("/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   };
+
   return (
     <>
       {/* SideBar */}
       <div
         id="menu"
-        className="hidden relative md:flex flex-col items-center antialiased px-3 lg:px-6 xl:px-12 pt-6 justify-start bg-emerald-400  h-full w-full md:w-[30%]  text-slate-300    overflow-y-auto pb-8"
+        className="hidden relative md:flex flex-col items-center antialiased px-3 lg:px-6 xl:px-12 pt-6 justify-start bg-gradient-to-br from-blue-500 to-emerald-400  h-full w-full md:w-[30%]  text-slate-300    overflow-y-auto pb-8"
       >
         <div className="flex items-center gap-2 mb-6 2xl:mb-6 border-b pb-3 2xl:pb-5 w-full justify-center">
           <div className=" bg-white overflow-hidden rounded-full w-14 2xl:w-16 h-14 2xl:h-16 p-2">
@@ -66,16 +49,18 @@ const Sidebar = () => {
             />
           </div>
           <div className="flex flex-col">
-            <h2 className="text-lg font-bold text-white">Manager</h2>
+            <h2 className="text-lg font-bold text-white capitalize">
+              {employeeType}
+            </h2>
             <p className="  text-white">Online</p>
           </div>
         </div>
-        {managerLink.map((link, index) => (
+        {navlinks.map((link, index) => (
           <Link
             key={index}
             className={`flex items-center my-[0.28rem] transition-all cursor-pointer border border-white rounded-full p-2 2xl:p-3  w-full  text-center  ${
               currentPath === link.href
-                ? " bg-transparent text-white "
+                ? " bg-emerald-400 text-white "
                 : "text-slate-200 bg-blue-500 hover:bg-blue-600 "
             }`}
             href={link.href}
@@ -134,7 +119,7 @@ const Sidebar = () => {
               <p className="  text-white">Online</p>
             </div>
           </div>
-          {managerLink.map((link, index) => (
+          {navlinks.map((link, index) => (
             <Link
               key={index}
               className={`flex items-center my-[0.30rem] transition-all cursor-pointer border border-white rounded-full p-2 2xl:p-3  w-full  text-center  ${

@@ -43,7 +43,7 @@ import { ICustomer } from "@/lib/types";
 import { FaAngleDown } from "react-icons/fa6";
 import { PiWarningOctagonLight } from "react-icons/pi";
 import { useEffect, useState } from "react";
-import { fetchAllCustomers } from "@/lib/cruds/customerCrud";
+import { getCustomersWithPendingPayments } from "@/lib/cruds/customerCrud";
 import { ThreeDots } from "react-loader-spinner";
 
 export default function Page() {
@@ -53,7 +53,7 @@ export default function Page() {
   useEffect(() => {
     const fetchcustomer = async () => {
       setLoading(true);
-      const data = await fetchAllCustomers();
+      const data = await getCustomersWithPendingPayments();
       setCustomer(data);
       setLoading(false);
     };
@@ -62,44 +62,31 @@ export default function Page() {
   return (
     <main className="flex flex-col items-center justify-between w-full  ">
       <div className="  p-5 px-3 md:px-6 rounded-md shadow-sm w-full">
-        <h2 className=" text-slate-900 font-bold text-xl border-b pb-3 w-full 2xl:text-2xl mb-5">
-          List of Registered Customers
+        <h2 className=" text-slate-900 font-bold text-xl border-b pb-3 w-full 2xl:text-2xl mb-3 2xl:mb-5">
+          Pending Payments of Customers
         </h2>
         <Table>
           {!customer.length && !loading && (
-            <TableCaption className=" py-3"> No customer added</TableCaption>
+            <TableCaption className=" py-3"> No Pending Payment</TableCaption>
           )}{" "}
-          <TableHeader className=" bg-blue-500/80">
-            <TableRow>
-              <TableHead className=" text-white font-bold text-center">
-                PID
+          <TableHeader className=" ">
+            <TableRow className="">
+              <TableHead className=" text-blue-600 capitalize   2xl:text-lg text-nowrap text-center font-bold">
+                Customer Name
               </TableHead>
-              <TableHead className=" text-white text-xs text-nowrap 2xl:text-sm font-bold">
-                Fullname
+              <TableHead className=" text-blue-600 capitalize   2xl:text-lg  text-nowrap text-center font-bold">
+                Required Service Time
               </TableHead>
-              <TableHead className=" text-white text-xs text-nowrap 2xl:text-sm font-bold">
-                Email
+              <TableHead className=" text-blue-600 capitalize   2xl:text-lg text-nowrap text-center font-bold">
+                Amount per Hour
               </TableHead>
-              <TableHead className=" text-white text-xs text-nowrap 2xl:text-sm font-bold">
-                Phone Number
+              <TableHead className=" text-blue-600 capitalize   2xl:text-lg text-nowrap text-center font-bold">
+                Status
               </TableHead>
-              <TableHead className=" text-white text-xs text-nowrap 2xl:text-sm font-bold">
-                Date of Birth
+              <TableHead className=" text-blue-600 capitalize   2xl:text-lg text-nowrap text-center font-bold">
+                payable Amount
               </TableHead>
-              <TableHead className=" text-center text-white text-xs text-nowrap 2xl:text-sm font-bold">
-                Address
-              </TableHead>
-              <TableHead className=" text-center text-white text-xs text-nowrap 2xl:text-sm font-bold">
-                Service Type
-              </TableHead>
-
-              <TableHead className=" text-center  text-white text-xs text-nowrap 2xl:text-sm font-bold">
-                Required Time
-              </TableHead>
-              <TableHead className=" text-center  text-white text-xs text-nowrap 2xl:text-sm font-bold">
-                Amount
-              </TableHead>
-              <TableHead className=" text-center  text-white text-xs text-nowrap 2xl:text-sm font-bold">
+              <TableHead className=" text-blue-600 capitalize   2xl:text-lg text-nowrap text-center font-bold">
                 Actions
               </TableHead>
             </TableRow>
@@ -107,32 +94,29 @@ export default function Page() {
           <TableBody>
             {customer.map((customer, index) => (
               <TableRow key={index}>
-                <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] text-center text-slate-500 border-slate-200">
-                  #{index + 1}
-                </TableCell>
-                <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
+                <TableCell className="font-thin border-b pb-6 pt-6 text-sm 2xl:text-base text-center truncate max-w-[90px] border-slate-200">
                   {customer.fullname}
                 </TableCell>
-                <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
-                  {customer.email}
+                <TableCell className="font-thin border-b pb-6 pt-6 text-sm 2xl:text-base text-center truncate max-w-[90px] border-slate-200">
+                  <span className="font-semibold mr-1.5">
+                    {customer.totalTimeRequired}
+                  </span>
+                  hours a day
                 </TableCell>
-                <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
-                  {customer.phoneNumber}
-                </TableCell>
-                <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
-                  {customer.dateOfBirth}
-                </TableCell>
-                <TableCell className="font-semibold text-center border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
-                  {customer.address}
-                </TableCell>
-                <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
-                  {customer.serviceType}
-                </TableCell>
-                <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
-                  {customer.totalTimeRequired} hours a day
-                </TableCell>
-                <TableCell className="font-thin border-b pb-6 pt-6 text-xs 2xl:text-sm truncate max-w-[100px] border-slate-200">
+                <TableCell className="font-thin border-b pb-6 pt-6 text-sm 2xl:text-base text-center truncate max-w-[90px] border-slate-200">
                   {customer.amount}
+                </TableCell>
+
+                <TableCell className="border-b pb-6 pt-6 flex items-center justify-center border-slate-200">
+                  <p className=" py-1.5 px-4 text-xs rounded-3xl bg-yellow-100 text-yellow-600 font-semibold">
+                    pending
+                  </p>
+                </TableCell>
+                <TableCell className="font-thin border-b pb-6 pt-6 text-sm 2xl:text-base text-center truncate max-w-[90px] border-slate-200">
+                  {parseInt(customer.amount) *
+                    parseInt(customer.totalTimeRequired) *
+                    30}{" "}
+                  Rs
                 </TableCell>
                 <TableCell className="font-thin text-center border-b pb-4 pt-4 border-slate-200">
                   <DropdownMenu>
@@ -142,14 +126,10 @@ export default function Page() {
                     <DropdownMenuContent className=" mr-8">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem className="bg-slate-50 my-1 font-semibold text-slate-900 text-center w-full px-8 py-3">
-                        Restrict
+                      <DropdownMenuItem className="bg-green-100 my-1 text-xs font-semibold text-green-700 text-center w-full px-6 py-2">
+                        Mark as Paid
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-
-                      <DropdownMenuItem className="bg-red-100 my-1 font-semibold text-red-700 text-center w-full px-8 py-3">
-                        Delete
-                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

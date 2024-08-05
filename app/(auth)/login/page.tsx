@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { FaArrowRight } from "react-icons/fa6";
 import toast from "react-hot-toast";
 import {
   Form,
@@ -19,6 +18,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebaseConfig";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { ColorRing } from "react-loader-spinner";
+import { fetchEmployeeDetails } from "@/lib/cruds/employeeCrud";
+import { IEmployee } from "@/lib/types";
 
 const formSchema = z.object({
   password: z.string().min(3, {
@@ -35,21 +41,57 @@ interface IUser {
 }
 
 const page = () => {
+  const [loading, setLoading] = useState(false);
+  const [validation, setValidation] = useState("");
+  const router = useRouter();
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      password: "",
-      email: "",
+      email: "matt@gmail.com",
+      password: "password",
     },
   });
 
-  async function onSubmit(values: IUser) {
-    console.log(values);
+  async function onSubmit(values: { email: string; password: string }) {
+    const { email, password } = values;
+    setLoading(true);
+    setValidation("");
+    try {
+      const loggedinUser = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      console.log("🚀 ~ onSubmit ~ loggedinUser:", loggedinUser);
+      if (loggedinUser.user) {
+        const userData = await fetchEmployeeDetails(loggedinUser.user.uid!);
+        console.log("🚀 ~ onSubmit ~ userData:", userData);
+        if (userData?.employeeType === "ceo") {
+          Cookies.set("userRole", "CEO");
+          Cookies.set("isLoggedIn", "true");
+          setLoading(false);
+          toast.success(`Welcome ${userData?.employeeType}!`);
+          router.push("/");
+        } else if (userData?.employeeType === "manager") {
+          Cookies.set("userRole", "manager");
+          Cookies.set("isLoggedIn", "true");
+          setLoading(false);
+          toast.success(`Welcome ${userData?.employeeType}!`);
+          router.push("/");
+        } else {
+          Cookies.set("userRole", "careworker");
+          Cookies.set("isLoggedIn", "true");
+          setLoading(false);
+          toast.success(`Welcome ${userData?.employeeType}!`);
+        }
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+      setValidation("Invalid email or password");
+      setLoading(false);
+    }
   }
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  };
 
   return (
     <div className=" min-h-screen bg-gradient-to-tr from-blue-100 to-emerald-100 flex items-center justify-center">
@@ -114,6 +156,9 @@ const page = () => {
                           className="w-72 h-10 border-2 mb-0.5 border-gray-300 rounded-lg p-2"
                         />
                       </FormControl>
+                      <p className="text-sm text-red-400 font-semibold">
+                        {validation}
+                      </p>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -129,7 +174,7 @@ const page = () => {
                     type="submit"
                     className="bg-blue-600  w-full rounded-full hover:bg-slate-700 mt-4 text-white font-semibold py-4 2xl:py-6  px-10 2xl:text-lg   focus:outline-none focus:shadow-outline"
                   >
-                    {/* {loading ? (
+                    {loading ? (
                       <ColorRing
                         visible={true}
                         height="35"
@@ -145,9 +190,9 @@ const page = () => {
                           "#ffffff",
                         ]}
                       />
-                    ) : ( */}
-                    <span className=" capitalize">Add Customer</span>
-                    {/* )} */}
+                    ) : (
+                      <span className=" capitalize">Login</span>
+                    )}
                   </Button>
                 </div>
               </form>

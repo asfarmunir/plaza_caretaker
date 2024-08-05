@@ -20,6 +20,17 @@ import { Input } from "@/components/ui/input";
 import { IoArrowBack } from "react-icons/io5";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { auth } from "@/lib/firebaseConfig";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createNewCustomers } from "@/lib/cruds/customerCrud";
+import { ColorRing } from "react-loader-spinner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const formSchema = z.object({
   fullname: z.string().min(3, {
@@ -48,7 +59,7 @@ const formSchema = z.object({
   }),
 });
 
-interface IEmployee {
+interface IUser {
   fullname: string;
   email: string;
   dateOfBirth: string;
@@ -60,14 +71,16 @@ interface IEmployee {
 }
 
 const page = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       fullname: "",
       email: "",
-      dateOfBirth: "",
+      dateOfBirth: "2001-02-20",
       serviceType: "",
-      phoneNumber: "",
+      phoneNumber: " 00328739423",
       address: "",
       totalTimeRequired: "",
       amount: "",
@@ -75,10 +88,36 @@ const page = () => {
   });
 
   const router = useRouter();
-  async function onSubmit(values: IEmployee) {
-    console.log(values);
-    router.push("/businessDashboard/news/add/success");
+
+  async function onSubmit(values: IUser) {
+    console.log("🚀 ~ onSubmit ~ values:", values);
+    setLoading(true);
+    try {
+      const createdUser = await createUserWithEmailAndPassword(
+        auth,
+        values.email,
+        "password"
+      );
+
+      if (createdUser) {
+        const newValues = {
+          ...values,
+          uid: createdUser.user?.uid,
+          paymentCleared: false,
+        };
+        await createNewCustomers(newValues);
+
+        setLoading(false);
+        toast.success("Customer added successfully");
+        router.push("/"); // Navigate to the home page
+      }
+    } catch (error: any) {
+      setLoading(false);
+      console.error("Error signing up:", error);
+      toast.error(error.message);
+    }
   }
+
   return (
     <div className=" flex flex-col w-full items-start justify-start  2xl:p-8 px-4 md:px-16">
       <h1 className=" text-blue-500 font-bold text-3xl text-center w-full">
@@ -206,11 +245,35 @@ const page = () => {
                       Service Type
                     </FormLabel>
                     <FormControl>
-                      <Input
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger className="shadow appearance-none border mr-0 md:mr-6 placeholder:text-blue-600  rounded-lg 2xl:rounded-xl bg-emerald-300/70 w-full py-5 2xl:py-8 px-6 text-blue-700 2xl:text-lg font-semibold leading-tight focus:outline-none focus:shadow-outline">
+                          <SelectValue placeholder="service" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="home care">Home care</SelectItem>
+                          <SelectItem value="supported living">
+                            Supported Living
+                          </SelectItem>
+                          <SelectItem value="domiciliary care">
+                            Domiciliary Care
+                          </SelectItem>
+                          <SelectItem value="live in care">
+                            Live-in Care
+                          </SelectItem>
+                          <SelectItem value="personal care assistance">
+                            Personal Care Assistant
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      {/* <Input
                         placeholder="service type"
                         {...field}
                         className="shadow appearance-none border mr-0 md:mr-6 placeholder:text-blue-600  rounded-lg 2xl:rounded-xl bg-emerald-300/70 w-full py-5 2xl:py-8 px-6 text-blue-700 2xl:text-lg font-semibold leading-tight focus:outline-none focus:shadow-outline"
-                      />
+                      /> */}
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -228,7 +291,8 @@ const page = () => {
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="time ( mention details )"
+                        type="number"
+                        placeholder="time ( hours per day )"
                         {...field}
                         className="shadow appearance-none border mr-0 md:mr-6 placeholder:text-blue-600  rounded-lg 2xl:rounded-xl bg-emerald-300/70 w-full py-5 2xl:py-8 px-6 text-blue-700 2xl:text-lg font-semibold leading-tight focus:outline-none focus:shadow-outline"
                       />
@@ -264,25 +328,25 @@ const page = () => {
                 type="submit"
                 className="bg-gradient-to-br from-blue-600 to-emerald-400 w-full rounded-lg hover:bg-slate-700 mt-6 text-white font-semibold py-6 2xl:py-7  px-10 2xl:text-lg   focus:outline-none focus:shadow-outline"
               >
-                {/* {loading ? (
-                      <ColorRing
-                        visible={true}
-                        height="35"
-                        width="35"
-                        ariaLabel="color-ring-loading"
-                        wrapperStyle={{}}
-                        wrapperClass="color-ring-wrapper"
-                        colors={[
-                          "#ffffff",
-                          "#ffffff",
-                          "#ffffff",
-                          "#ffffff",
-                          "#ffffff",
-                        ]}
-                      />
-                    ) : ( */}
-                <span className=" capitalize">Add Customer</span>
-                {/* )} */}
+                {loading ? (
+                  <ColorRing
+                    visible={true}
+                    height="35"
+                    width="35"
+                    ariaLabel="color-ring-loading"
+                    wrapperStyle={{}}
+                    wrapperClass="color-ring-wrapper"
+                    colors={[
+                      "#ffffff",
+                      "#ffffff",
+                      "#ffffff",
+                      "#ffffff",
+                      "#ffffff",
+                    ]}
+                  />
+                ) : (
+                  <span className=" capitalize">Add Customer</span>
+                )}
               </Button>
             </div>
           </form>
