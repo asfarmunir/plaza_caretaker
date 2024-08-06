@@ -46,13 +46,21 @@ const ceoLinks = [
   },
   {
     name: "Profit/Loss",
-    href: "/profit-loss",
+    href: "/ceo/profit-loss",
   },
   {
     name: "Total Work Hours",
     href: "/total-work-hours",
   },
 ];
+
+const carewokerLinks = [
+  {
+    name: "Assigned Customers",
+    href: "/careworker/assigned-customers",
+  },
+];
+
 export default function RootLayout({
   children,
 }: {
@@ -70,6 +78,9 @@ export default function RootLayout({
     }
     if (user === "manager") {
       setLinks(managerLinks);
+    }
+    if (user === "careworker") {
+      setLinks(carewokerLinks);
     }
   }, []);
 

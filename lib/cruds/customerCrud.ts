@@ -97,3 +97,35 @@ export const getCustomersWithPendingPayments = async () => {
   const customers = querySnapshot.docs.map((doc) => doc.data());
   return customers as ICustomer[];
 }
+export const getCustomersWithCompletedPayments = async () => {
+  const q = query(collectionRef, where("paymentCleared", "==", true));
+  const querySnapshot = await getDocs(q);
+  const customers = querySnapshot.docs.map((doc) => doc.data());
+  return customers as ICustomer[];
+}
+
+export const updatePaymentStatus = async (customerId: string, status: boolean) => {
+  try {
+     const customerDoc = doc(collectionRef, customerId);
+     if(!customerDoc) throw new Error("No such customer!");
+  await updateDoc(customerDoc, {
+    paymentCleared: status,
+  });
+  return true;
+    
+  } catch (error) {
+    
+    console.error("Error updating payment status:", error);
+    return false;
+
+  }
+ 
+}
+
+
+export const getCustomersAssignedToCareworker = async (careworkerId: string) => {
+  const q = query(collectionRef, where("careworkerId", "==", careworkerId));
+  const querySnapshot = await getDocs(q);
+  const customers = querySnapshot.docs.map((doc) => doc.data());
+  return customers as ICustomer[];
+}

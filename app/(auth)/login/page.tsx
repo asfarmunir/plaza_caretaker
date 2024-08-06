@@ -84,6 +84,7 @@ const page = () => {
           Cookies.set("isLoggedIn", "true");
           setLoading(false);
           toast.success(`Welcome ${userData?.employeeType}!`);
+          router.push("/careworker/assigned-customers");
         }
       }
     } catch (error) {

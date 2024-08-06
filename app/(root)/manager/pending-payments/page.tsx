@@ -19,35 +19,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import {
-//   Pagination,
-//   PaginationContent,
-//   PaginationEllipsis,
-//   PaginationItem,
-//   PaginationLink,
-//   PaginationNext,
-//   PaginationPrevious,
-// } from "@/components/ui/pagination";
-// import {
-//   AlertDialog,
-//   AlertDialogAction,
-//   AlertDialogCancel,
-//   AlertDialogContent,
-//   AlertDialogDescription,
-//   AlertDialogFooter,
-//   AlertDialogHeader,
-//   AlertDialogTitle,
-//   AlertDialogTrigger,
-// } from "@/components/ui/alert-dialog";
 import { ICustomer } from "@/lib/types";
 import { FaAngleDown } from "react-icons/fa6";
-import { PiWarningOctagonLight } from "react-icons/pi";
 import { useEffect, useState } from "react";
-import { getCustomersWithPendingPayments } from "@/lib/cruds/customerCrud";
+import {
+  getCustomersWithPendingPayments,
+  updatePaymentStatus,
+} from "@/lib/cruds/customerCrud";
 import { ThreeDots } from "react-loader-spinner";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(true);
   const [customer, setCustomer] = useState<ICustomer[]>([]);
 
   useEffect(() => {
@@ -59,6 +44,18 @@ export default function Page() {
     };
     fetchcustomer();
   }, []);
+
+  const updateStatus = async (customerId: string) => {
+    toast.promise(updatePaymentStatus(customerId, true), {
+      loading: "Updating Payment Status",
+      success: "Payment Status Updated",
+      error: "Failed to Update Payment Status",
+    });
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
+  };
+
   return (
     <main className="flex flex-col items-center justify-between w-full  ">
       <div className="  p-5 px-3 md:px-6 rounded-md shadow-sm w-full">
@@ -126,9 +123,12 @@ export default function Page() {
                     <DropdownMenuContent className=" mr-8">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem className="bg-green-100 my-1 text-xs font-semibold text-green-700 text-center w-full px-6 py-2">
+                      <button
+                        onClick={() => updateStatus(customer.uid)}
+                        className="bg-green-100 my-1 text-xs font-semibold text-green-700 text-center w-full px-6 py-2"
+                      >
                         Mark as Paid
-                      </DropdownMenuItem>
+                      </button>
                       <DropdownMenuSeparator />
                     </DropdownMenuContent>
                   </DropdownMenu>

@@ -12,6 +12,7 @@ import {
   query,
   where,
   onSnapshot,
+  arrayUnion,
 } from 'firebase/firestore';
 import db from '@/lib/firebaseConfig';
 import { v4} from 'uuid';
@@ -55,27 +56,29 @@ export const getAllCareworkers = async () => {
   const employees = querySnapshot.docs.map((doc) => doc.data());
   return employees as IEmployee[];
 }
-// export const assignCustomer = async (customerId: string, careworkerId: string) => {
-//   const employeeDoc = doc(collectionRef, careworkerId);
-//   const employeeSnapshot = await getDoc(employeeDoc);
 
-//   if (employeeSnapshot.exists()) {
-//     const employeeData = employeeSnapshot.data();
-    
-//     const assignedCustomers = employeeData.assignedCustomers || [];
+export const addWorkHoursForCareworker = async (
+  careworkerId: string,
+  data: {
+    workHours: number;
+    date: string;
+  }
+) => {
+  try {
+    const careworkerDoc = doc(collectionRef, careworkerId);
 
-//     assignedCustomers.push(customerId);
+    const workHoursEntry = {
+      hours: data.workHours,
+      date: data.date,
+    };
 
-//     await updateDoc(employeeDoc, {
-//       assignedCustomers: assignedCustomers,
-//     });
+    await updateDoc(careworkerDoc, {
+      workHours: arrayUnion(workHoursEntry),
+    });
 
-//     return true;
-//   } else {
-//     console.error("No such employee!");
-//     return false;
-//   }
-// };
-
-
-
+    return true;
+  } catch (error) {
+    console.error("Error updating document: ", error);
+    return false;
+  }
+};

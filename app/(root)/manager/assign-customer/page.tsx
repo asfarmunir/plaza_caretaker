@@ -60,7 +60,7 @@ const page = () => {
     await assignCareworker(customerId, careworkerId);
     toast.dismiss();
     toast.success("Careworker Assigned  Successfully");
-    router.refresh();
+    router.push("/manager/assign-customer/success");
   };
 
   return (
