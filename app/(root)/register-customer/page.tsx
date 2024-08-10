@@ -292,7 +292,7 @@ const page = () => {
                     <FormControl>
                       <Input
                         type="number"
-                        placeholder="time ( hours per day )"
+                        placeholder="time (minutes) "
                         {...field}
                         className="shadow appearance-none border mr-0 md:mr-6 placeholder:text-blue-600  rounded-lg 2xl:rounded-xl bg-emerald-300/70 w-full py-5 2xl:py-8 px-6 text-blue-700 2xl:text-lg font-semibold leading-tight focus:outline-none focus:shadow-outline"
                       />

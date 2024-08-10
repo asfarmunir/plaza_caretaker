@@ -98,7 +98,7 @@ const page = () => {
           <div className="flex items-center gap-3">
             <h3 className="font-semibold">Expected Revenue :</h3>
             <p className="text-xl font-semibold text-yellow-500">
-              Rs {totalPendingPayments ? totalPendingPayments * 30 : 0}{" "}
+              £{totalPendingPayments ? totalPendingPayments * 30 : 0}{" "}
             </p>
           </div>
         </div>
@@ -128,7 +128,7 @@ const page = () => {
           <div className="flex items-center gap-3">
             <h3 className="font-semibold">Total Revenue:</h3>
             <p className="text-xl font-semibold text-green-500">
-              Rs {totalRecievedPayments ? totalRecievedPayments * 30 : 0}{" "}
+              £{totalRecievedPayments ? totalRecievedPayments * 30 : 0}{" "}
             </p>
           </div>
         </div>
@@ -158,7 +158,7 @@ const page = () => {
           <div className="flex items-center gap-3">
             <h3 className="font-semibold">Revenue Loss:</h3>
             <p className="text-xl font-semibold text-red-500">
-              Rs {totalRecievedPayments ? totalRecievedPayments * 30 : 0}{" "}
+              £{totalRecievedPayments ? totalRecievedPayments * 30 : 0}{" "}
             </p>
           </div>
         </div>

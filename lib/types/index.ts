@@ -6,6 +6,11 @@ export interface IEmployee {
   gender: string;
   phoneNumber: string;
   uid: string;
+  assignedCustomers: string[];
+  workTime: [{
+    date: string;
+    minutes: number;
+  }];
 }
 
 export interface ICustomer {

@@ -54,15 +54,11 @@ const page = () => {
     return `${year}-${month}-${date}`;
   };
 
-  const handleSubmit = async () => {
-    if (!workHours) {
-      setValidation(true);
-      return;
-    }
+  const handleSubmit = async (minutes: string) => {
     setLoading(true);
     setValidation(false);
     const data = {
-      workHours,
+      workHours: parseInt(minutes),
       date: getTodaysDate(),
     };
     await addWorkHoursForCareworker(user.uid, data);
@@ -98,7 +94,7 @@ const page = () => {
               {customer.fullname}{" "}
               <span className=" mt-0.5 bg-slate-100 flex items-center text-slate-600 font-thin italic text-xs px-3 py-1">
                 <FcAlarmClock className=" text-lg mr-2" />{" "}
-                {customer.totalTimeRequired} per day
+                {customer.totalTimeRequired} minutes per day
               </span>
             </h2>
             <p className=" font-semibold text-sm text-slate-600 mb-2">
@@ -128,33 +124,16 @@ const page = () => {
                     </span>
                   </AlertDialogTitle>
                 </div>
-                <div className=" my-2 w-full">
-                  <AlertDialogDescription>
-                    <label className=" text-lg font-semibold text-slate-600">
-                      Work Hours
-                    </label>
-                    <input
-                      type="number"
-                      onChange={(e) => setWorkHours(parseInt(e.target.value))}
-                      className=" w-full border-b-2 border-slate-500 py-2 px-3"
-                      placeholder="Enter work hours"
-                    />
-                    {validation && (
-                      <p className=" text-red-500 mt-2 italic text-sm">
-                        Please enter the work hours
-                      </p>
-                    )}
-                  </AlertDialogDescription>
-                </div>
-                <AlertDialogFooter>
+
+                <div className="flex w-full justify-center items-center pb-4">
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <Button
-                    onClick={() => handleSubmit()}
+                    onClick={() => handleSubmit(customer.totalTimeRequired)}
                     className=" bg-blue-600"
                   >
-                    Submit
+                    Check In
                   </Button>
-                </AlertDialogFooter>
+                </div>
               </AlertDialogContent>
             </AlertDialog>
           </div>

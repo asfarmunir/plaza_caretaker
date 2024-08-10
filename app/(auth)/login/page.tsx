@@ -72,19 +72,19 @@ const page = () => {
           Cookies.set("isLoggedIn", "true");
           setLoading(false);
           toast.success(`Welcome ${userData?.employeeType}!`);
-          router.push("/");
+          router.replace("/");
         } else if (userData?.employeeType === "manager") {
           Cookies.set("userRole", "manager");
           Cookies.set("isLoggedIn", "true");
           setLoading(false);
           toast.success(`Welcome ${userData?.employeeType}!`);
-          router.push("/");
+          router.replace("/");
         } else {
           Cookies.set("userRole", "careworker");
           Cookies.set("isLoggedIn", "true");
           setLoading(false);
           toast.success(`Welcome ${userData?.employeeType}!`);
-          router.push("/careworker/assigned-customers");
+          router.replace("/careworker/assigned-customers");
         }
       }
     } catch (error) {

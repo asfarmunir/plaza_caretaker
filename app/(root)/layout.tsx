@@ -50,7 +50,7 @@ const ceoLinks = [
   },
   {
     name: "Total Work Hours",
-    href: "/total-work-hours",
+    href: "/ceo/total-workhours",
   },
 ];
 

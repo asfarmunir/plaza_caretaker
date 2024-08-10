@@ -68,12 +68,12 @@ export const addWorkHoursForCareworker = async (
     const careworkerDoc = doc(collectionRef, careworkerId);
 
     const workHoursEntry = {
-      hours: data.workHours,
+      minutes: data.workHours,
       date: data.date,
     };
 
     await updateDoc(careworkerDoc, {
-      workHours: arrayUnion(workHoursEntry),
+      workTime: arrayUnion(workHoursEntry),
     });
 
     return true;

@@ -113,7 +113,7 @@ export default function Page() {
                   {parseInt(customer.amount) *
                     parseInt(customer.totalTimeRequired) *
                     30}{" "}
-                  Rs
+                  £
                 </TableCell>
                 <TableCell className="font-thin text-center border-b pb-4 pt-4 border-slate-200">
                   <DropdownMenu>
