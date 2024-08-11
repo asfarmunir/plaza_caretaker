@@ -75,7 +75,7 @@ export default function Page() {
                 Required Service Time
               </TableHead>
               <TableHead className=" text-blue-600 capitalize   2xl:text-lg text-nowrap text-center font-bold">
-                Amount per Hour
+                Amount per minute
               </TableHead>
               <TableHead className=" text-blue-600 capitalize   2xl:text-lg text-nowrap text-center font-bold">
                 Status
@@ -98,7 +98,7 @@ export default function Page() {
                   <span className="font-semibold mr-1.5">
                     {customer.totalTimeRequired}
                   </span>
-                  hours a day
+                  minutes a day
                 </TableCell>
                 <TableCell className="font-thin border-b pb-6 pt-6 text-sm 2xl:text-base text-center truncate max-w-[90px] border-slate-200">
                   {customer.amount}

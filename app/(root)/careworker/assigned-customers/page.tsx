@@ -9,12 +9,8 @@ import Image from "next/image";
 import { BsClipboard2CheckFill } from "react-icons/bs";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
@@ -29,11 +25,9 @@ const page = () => {
   const [workHours, setWorkHours] = useState<number>(0);
   const [validation, setValidation] = useState<boolean>(false);
   const fetchCustomer = async (id: string) => {
-    console.log("hehe");
-
     const data = await getCustomersAssignedToCareworker(id);
     setCustomer(data);
-    setTimeout(() => setLoading(false), 1300);
+    setLoading(false);
   };
   useEffect(() => {
     if (user && user.uid) {
@@ -42,8 +36,6 @@ const page = () => {
       setLoading(false);
     }
   }, [user]);
-
-  console.log("🚀 ~ page ~ user:", customer);
 
   const getTodaysDate = () => {
     const today = new Date();

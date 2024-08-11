@@ -82,3 +82,43 @@ export const addWorkHoursForCareworker = async (
     return false;
   }
 };
+
+
+export const payCareworker = async (careworkerId: string, data: { month: string; salary: number; }) => {
+  try {
+    const careworkerDocRef = doc(collectionRef, careworkerId);
+    const careworkerDoc = await getDoc(careworkerDocRef);
+
+    if (careworkerDoc.exists()) {
+      const careworkerData = careworkerDoc.data();
+      
+      if (careworkerData.salariesPaid?.some((entry: { month: string; }) => entry.month === data.month)) {
+        throw new Error(`Salary for ${data.month} has already been paid.`);
+      }
+
+      const salary = {
+        month: data.month,
+        salary: data.salary,
+      };
+
+      await updateDoc(careworkerDocRef, {
+        salariesPaid: arrayUnion(salary),
+      });
+
+      return true;
+    } else {
+      throw new Error("Careworker not found.");
+    }
+  } catch (error) {
+    console.error("Error updating document: ", error);
+    throw error; // Re-throw the error to be caught in the submitHandler
+  }
+};
+
+
+export const getAllPaidCareworkers = async () => {
+  const q = query(collectionRef, where("salariesPaid", "!=", []));
+  const querySnapshot = await getDocs(q);
+  const employees = querySnapshot.docs.map((doc) => doc.data());
+  return employees as IEmployee[];
+}

@@ -12,22 +12,22 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { FaAngleDown } from "react-icons/fa6";
-import { PiWarningOctagonLight } from "react-icons/pi";
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { ThreeDots } from "react-loader-spinner";
 import { IEmployee } from "@/lib/types";
-import { getAllCareworkers } from "@/lib/cruds/employeeCrud";
+import { getAllCareworkers, payCareworker } from "@/lib/cruds/employeeCrud";
+import { BsClipboard2CheckFill } from "react-icons/bs";
+import toast from "react-hot-toast";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
   const [employees, setEmployees] = useState<IEmployee[]>([]);
+  const [amount, setAmount] = useState<number>(0);
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -39,11 +39,49 @@ export default function Page() {
     fetchEmployees();
   }, []);
 
+  const getMonthAndYear = () => {
+    const today = new Date();
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    const month = monthNames[today.getMonth()];
+    const year = today.getFullYear();
+
+    return `${month} ${year}`;
+  };
+
+  const submitHandler = async (id: string) => {
+    const date = getMonthAndYear();
+    const data = {
+      month: date,
+      salary: amount,
+    };
+    toast.promise(payCareworker(id, data), {
+      loading: "Paying Careworker",
+      success: "Careworker Paid",
+      error: "Salary has been paid for this month",
+    });
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 3000);
+  };
   return (
     <main className="flex flex-col items-center justify-between w-full  ">
       <div className="  p-5 px-3 md:px-6 rounded-md shadow-sm w-full">
         <h2 className=" text-slate-900 font-bold text-xl border-b pb-3 w-full 2xl:text-2xl mb-5">
-          Total Workhours
+          Pay Careworkers
         </h2>
         <Table>
           {!employees.length && !loading && (
@@ -58,13 +96,10 @@ export default function Page() {
                 Fullname
               </TableHead>
               <TableHead className=" text-white text-xs text-nowrap 2xl:text-sm font-bold">
-                Shifts Worked
+                Total Work Time
               </TableHead>
-              <TableHead className=" text-white text-xs text-nowrap 2xl:text-sm font-bold">
-                Number of Clients
-              </TableHead>
-              <TableHead className=" text-white text-xs text-nowrap 2xl:text-sm font-bold">
-                Total Workhours
+              <TableHead className=" text-white text-xs text-nowrap text-center 2xl:text-sm font-bold">
+                Salaries
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -77,15 +112,7 @@ export default function Page() {
                 <TableCell className="font-bold text-blue-600 capitalize border-b pb-6 pt-6 text-base 2xl:text-lg truncate max-w-[200px] border-slate-200">
                   {employee.fullname}
                 </TableCell>
-                <TableCell className="font-thin  border-b pb-6 pt-6  truncate max-w-[100px] border-slate-200">
-                  {employee.workTime ? employee.workTime.length : 0} Shifts
-                </TableCell>
-                <TableCell className="font-thin border-b pb-6 pt-6 truncate max-w-[100px] border-slate-200">
-                  {employee.assignedCustomers
-                    ? employee.assignedCustomers.length
-                    : 0}{" "}
-                  {""} Clients
-                </TableCell>
+
                 <TableCell className="font-semibold border-b pb-6 pt-6  truncate max-w-[100px] border-slate-200">
                   {employee.workTime
                     ? employee.workTime.reduce(
@@ -99,11 +126,51 @@ export default function Page() {
                   </span>{" "}
                   <br />
                   {employee.workTime
-                    ? employee.workTime
-                        .reduce((acc, curr) => acc + curr.minutes / 60, 0)
-                        .toFixed(2)
+                    ? employee.workTime.reduce(
+                        (acc, curr) => acc + curr.minutes / 60,
+                        0
+                      )
                     : 0}{" "}
                   hours
+                </TableCell>
+                <TableCell className="border-b pb-6 pt-6 flex items-center justify-center border-slate-200">
+                  <AlertDialog>
+                    <AlertDialogTrigger className=" text-white  inline-flex items-center gap-3 hover:text-slate-100 transition-all border-2 bg-blue-600 rounded-xl py-3 font-semibold px-8">
+                      <BsClipboard2CheckFill className=" text-xl text-white" />
+                      Pay Careworker
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className=" z-30">
+                      <div className=" pb-5 border-b  w-full">
+                        <AlertDialogTitle>
+                          Pay{" "}
+                          <span className="font-bold uppercase mx-1 text-blue-500">
+                            {employee.fullname}
+                          </span>{" "}
+                          for{" "}
+                          <span className=" bg-slate-100 text-slate-500 px-3 py-2 rounded-md mx-2">
+                            {" "}
+                            {getMonthAndYear()}{" "}
+                          </span>
+                        </AlertDialogTitle>
+                      </div>
+                      <input
+                        type="number"
+                        placeholder="Enter amount"
+                        onChange={(e) => setAmount(parseInt(e.target.value))}
+                        className="border border-slate-200 bg-slate-50 text-sm w-full px-3 py-2 rounded-lg"
+                      />
+
+                      <div className="flex w-full justify-center items-center gap-4 pb-4">
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <Button
+                          onClick={() => submitHandler(employee.uid)}
+                          className=" bg-blue-600"
+                        >
+                          Approve
+                        </Button>
+                      </div>
+                    </AlertDialogContent>
+                  </AlertDialog>{" "}
                 </TableCell>
               </TableRow>
             ))}

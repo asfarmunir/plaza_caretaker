@@ -11,6 +11,10 @@ export interface IEmployee {
     date: string;
     minutes: number;
   }];
+    salariesPaid:[{
+    month: string;
+    salary: number;
+  }]
 }
 
 export interface ICustomer {
@@ -23,4 +27,5 @@ export interface ICustomer {
   totalTimeRequired: string;
   amount: string;
   uid: string;
+
 }
