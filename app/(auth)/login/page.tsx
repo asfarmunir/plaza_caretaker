@@ -83,6 +83,7 @@ const page = () => {
           } else {
             router.replace("/careworker/assigned-customers");
           }
+          router.refresh();
         } else {
           throw new Error("Failed to fetch user data");
         }
