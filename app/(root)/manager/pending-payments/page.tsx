@@ -74,9 +74,7 @@ export default function Page() {
               <TableHead className=" text-blue-600 capitalize   2xl:text-lg  text-nowrap text-center font-bold">
                 Required Service Time
               </TableHead>
-              <TableHead className=" text-blue-600 capitalize   2xl:text-lg text-nowrap text-center font-bold">
-                Amount
-              </TableHead>
+
               <TableHead className=" text-blue-600 capitalize   2xl:text-lg text-nowrap text-center font-bold">
                 Status
               </TableHead>
@@ -100,20 +98,23 @@ export default function Page() {
                   </span>
                   minutes a day
                 </TableCell>
-                <TableCell className="font-thin border-b pb-6 pt-6 text-sm 2xl:text-base text-center truncate max-w-[90px] border-slate-200">
+                {/* <TableCell className="font-thin border-b pb-6 pt-6 text-sm 2xl:text-base text-center truncate max-w-[90px] border-slate-200">
                   {customer.amount}
-                </TableCell>
+                </TableCell> */}
 
                 <TableCell className="border-b pb-6 pt-6 flex items-center justify-center border-slate-200">
                   <p className=" py-1.5 px-4 text-xs rounded-3xl bg-yellow-100 text-yellow-600 font-semibold">
                     pending
                   </p>
                 </TableCell>
-                <TableCell className="font-thin border-b pb-6 pt-6 text-sm 2xl:text-base text-center truncate max-w-[90px] border-slate-200">
+                {/* <TableCell className="font-thin border-b pb-6 pt-6 text-sm 2xl:text-base text-center truncate max-w-[90px] border-slate-200">
                   {parseInt(customer.amount) *
                     parseInt(customer.totalTimeRequired) *
                     30}{" "}
                   £
+                </TableCell> */}
+                <TableCell className="font-thin border-b pb-6 pt-6 text-sm 2xl:text-base text-center truncate max-w-[90px] border-slate-200">
+                  {customer.amount} £
                 </TableCell>
                 <TableCell className="font-thin text-center border-b pb-4 pt-4 border-slate-200">
                   <DropdownMenu>
@@ -151,49 +152,6 @@ export default function Page() {
             />
           </div>
         )}
-        {/* <div className=" w-full flex items-center justify-between mt-3 gap-4">
-          <p className=" font-semibold text-xs md:text-sm text-slate-800">
-            Total Post: {count}
-          </p>
-          <div className="hidden md:flex items-center gap-2">
-            <p className=" font-semibold text-sm text-nowrap text-slate-800 mr-2">
-              1 - {Math.ceil(count / pageLimit)} of Pages
-            </p>
-
-            <button
-              disabled={page === 1}
-              onClick={handlePrevious}
-              className="disabled:bg-transparent border  disabled:cursor-not-allowed disabled:border-slate-300 disabled:text-slate-300 border-slate-500 text-slate-500 py-3 font-thin px-3  text-sm  rounded-lg inline-flex items-center"
-            >
-              <FaArrowLeft />
-            </button>
-            <div className="flex gap-2">
-              {Array.from(
-                { length: Math.ceil(count / pageLimit) },
-                (_, index) => (
-                  <button
-                    key={index}
-                    className={`border disabled:bg-transparent disabled:border-slate-300 disabled:text-slate-300  disabled:cursor-not-allowed border-slate-500  w-10 h-10 font-thin flex items-center justify-center    rounded-lg ${
-                      page === index + 1
-                        ? "bg-primary  text-white"
-                        : "bg-white  text-black"
-                    }`}
-                    // disabled={page === index + 1}
-                  >
-                    {index + 1}
-                  </button>
-                )
-              )}
-            </div>
-            <button
-              disabled={page >= Math.ceil(count / pageLimit)}
-              onClick={handleNext}
-              className="disabled:bg-transparent border  disabled:cursor-not-allowed disabled:border-slate-300 disabled:text-slate-300 border-slate-500 text-slate-500 py-3 font-thin px-3  text-sm  rounded-lg inline-flex items-center"
-            >
-              <FaArrowRight />
-            </button>
-          </div>
-        </div> */}
       </div>
     </main>
   );
