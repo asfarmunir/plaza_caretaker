@@ -165,12 +165,12 @@ const page = () => {
                     </FormItem>
                   )}
                 />
-                <Link
+                {/* <Link
                   href={"/"}
                   className=" text-sm mb-5 text-blue-500 underline"
                 >
                   Forget password?
-                </Link>
+                </Link> */}
                 <div className="flex flex-col w-full mt-2 items-center justify-center">
                   <Button
                     type="submit"
