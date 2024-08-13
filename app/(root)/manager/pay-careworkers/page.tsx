@@ -126,10 +126,9 @@ export default function Page() {
                   </span>{" "}
                   <br />
                   {employee.workTime
-                    ? employee.workTime.reduce(
-                        (acc, curr) => acc + curr.minutes / 60,
-                        0
-                      )
+                    ? employee.workTime
+                        .reduce((acc, curr) => acc + curr.minutes / 60, 0)
+                        .toFixed(2)
                     : 0}{" "}
                   hours
                 </TableCell>

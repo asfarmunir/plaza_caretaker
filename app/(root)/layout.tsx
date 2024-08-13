@@ -73,7 +73,7 @@ export default function RootLayout({
   useEffect(() => {
     const user = Cookies.get("userRole");
     setRole(user!);
-    if (user === "CEO") {
+    if (user === "ceo") {
       setLinks(ceoLinks);
     }
     if (user === "manager") {

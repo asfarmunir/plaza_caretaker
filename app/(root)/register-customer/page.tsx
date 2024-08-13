@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { v4 } from "uuid";
 
 const formSchema = z.object({
   fullname: z.string().min(3, {
@@ -93,24 +94,16 @@ const page = () => {
     console.log("🚀 ~ onSubmit ~ values:", values);
     setLoading(true);
     try {
-      const createdUser = await createUserWithEmailAndPassword(
-        auth,
-        values.email,
-        "password"
-      );
+      const newValues = {
+        ...values,
+        uid: v4(),
+        paymentCleared: false,
+      };
+      await createNewCustomers(newValues);
 
-      if (createdUser) {
-        const newValues = {
-          ...values,
-          uid: createdUser.user?.uid,
-          paymentCleared: false,
-        };
-        await createNewCustomers(newValues);
-
-        setLoading(false);
-        toast.success("Customer added successfully");
-        router.push("/"); // Navigate to the home page
-      }
+      setLoading(false);
+      toast.success("Customer added successfully");
+      router.push("/"); // Navigate to the home page
     } catch (error: any) {
       setLoading(false);
       console.error("Error signing up:", error);

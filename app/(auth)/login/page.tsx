@@ -48,8 +48,8 @@ const page = () => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "matt@gmail.com",
-      password: "password",
+      email: "",
+      password: "",
     },
   });
 
@@ -57,6 +57,7 @@ const page = () => {
     const { email, password } = values;
     setLoading(true);
     setValidation("");
+
     try {
       const loggedinUser = await signInWithEmailAndPassword(
         auth,
@@ -64,27 +65,26 @@ const page = () => {
         password
       );
       console.log("🚀 ~ onSubmit ~ loggedinUser:", loggedinUser);
+
       if (loggedinUser.user) {
         const userData = await fetchEmployeeDetails(loggedinUser.user.uid!);
         console.log("🚀 ~ onSubmit ~ userData:", userData);
-        if (userData?.employeeType === "ceo") {
-          Cookies.set("userRole", "CEO");
+
+        if (userData) {
+          const role = userData.employeeType;
+          Cookies.set("userRole", role);
           Cookies.set("isLoggedIn", "true");
+
           setLoading(false);
-          toast.success(`Welcome ${userData?.employeeType}!`);
-          router.replace("/");
-        } else if (userData?.employeeType === "manager") {
-          Cookies.set("userRole", "manager");
-          Cookies.set("isLoggedIn", "true");
-          setLoading(false);
-          toast.success(`Welcome ${userData?.employeeType}!`);
-          router.replace("/");
+          toast.success(`Welcome ${role}!`);
+
+          if (role === "ceo" || role === "manager") {
+            router.replace("/");
+          } else {
+            router.replace("/careworker/assigned-customers");
+          }
         } else {
-          Cookies.set("userRole", "careworker");
-          Cookies.set("isLoggedIn", "true");
-          setLoading(false);
-          toast.success(`Welcome ${userData?.employeeType}!`);
-          router.replace("/careworker/assigned-customers");
+          throw new Error("Failed to fetch user data");
         }
       }
     } catch (error) {

@@ -75,7 +75,7 @@ export default function Page() {
                 Required Service Time
               </TableHead>
               <TableHead className=" text-blue-600 capitalize   2xl:text-lg text-nowrap text-center font-bold">
-                Amount per minute
+                Amount
               </TableHead>
               <TableHead className=" text-blue-600 capitalize   2xl:text-lg text-nowrap text-center font-bold">
                 Status
@@ -91,7 +91,7 @@ export default function Page() {
           <TableBody>
             {customer.map((customer, index) => (
               <TableRow key={index}>
-                <TableCell className="font-thin border-b pb-6 pt-6 text-sm 2xl:text-base text-center truncate max-w-[90px] border-slate-200">
+                <TableCell className="font-thin border-b capitalize pb-6 pt-6 text-sm 2xl:text-base text-center truncate max-w-[90px] border-slate-200">
                   {customer.fullname}
                 </TableCell>
                 <TableCell className="font-thin border-b pb-6 pt-6 text-sm 2xl:text-base text-center truncate max-w-[90px] border-slate-200">
