@@ -38,6 +38,7 @@ interface IUser {
   dateOfBirth: string;
   employeeType: string;
   phoneNumber: string;
+  password: string;
   gender: string;
 }
 
@@ -47,6 +48,9 @@ const formSchema = z.object({
   }),
   email: z.string().email({
     message: "Please enter a valid email.",
+  }),
+  password: z.string().min(6, {
+    message: "Password must be at least 6 characters long.",
   }),
   dateOfBirth: z.string().min(5, {
     message: "Please enter a valid date.",
@@ -70,6 +74,7 @@ const page = () => {
     defaultValues: {
       fullname: "",
       email: "",
+      password: "",
       dateOfBirth: "2001-01-01",
       employeeType: "",
       gender: "",
@@ -85,7 +90,7 @@ const page = () => {
       const createdUser = await createUserWithEmailAndPassword(
         auth,
         values.email,
-        "password"
+        values.password
       );
 
       if (createdUser) {
@@ -184,6 +189,28 @@ const page = () => {
 
               <FormField
                 control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem className="mb-4 w-full">
+                    <FormLabel className="block 2xl:text-lg text-blue-600 font-semibold  mb-2">
+                      Password
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="enter account password"
+                        {...field}
+                        className="shadow appearance-none border mr-0 md:mr-6 placeholder:text-blue-600  rounded-lg 2xl:rounded-xl bg-emerald-300/70 w-full py-5 2xl:py-8 px-6 text-blue-700 2xl:text-lg font-semibold leading-tight focus:outline-none focus:shadow-outline"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex flex-col md:flex-row items-center justify-evenly  gap-6 w-full ">
+              <FormField
+                control={form.control}
                 name="dateOfBirth"
                 render={({ field }) => (
                   <FormItem className="mb-4 w-full">
@@ -202,43 +229,6 @@ const page = () => {
                   </FormItem>
                 )}
               />
-            </div>
-            <div className="flex flex-col md:flex-row items-center justify-evenly  gap-6 w-full ">
-              <FormField
-                control={form.control}
-                name="employeeType"
-                render={({ field }) => (
-                  <FormItem className="mb-4 w-full">
-                    <FormLabel className="block 2xl:text-lg text-blue-600 font-semibold  mb-2">
-                      Employee Type
-                    </FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <SelectTrigger className="shadow appearance-none border mr-0 md:mr-6 placeholder:text-blue-600  rounded-lg 2xl:rounded-xl bg-emerald-300/70 w-full py-5 2xl:py-8 px-6 text-blue-700 2xl:text-lg font-semibold leading-tight focus:outline-none focus:shadow-outline">
-                          <SelectValue placeholder="rank" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="ceo">Ceo</SelectItem>
-                          <SelectItem value="manager">Manager</SelectItem>
-                          <SelectItem value="careworker">Careworker</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    {/* <FormControl>
-                      <Input
-                        placeholder="type"
-                        {...field}
-                        className="shadow appearance-none border mr-0 md:mr-6 placeholder:text-blue-600  rounded-lg 2xl:rounded-xl bg-emerald-300/70 w-full py-5 2xl:py-8 px-6 text-blue-700 2xl:text-lg font-semibold leading-tight focus:outline-none focus:shadow-outline"
-                      />
-                    </FormControl> */}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <FormField
                 control={form.control}
                 name="gender"
@@ -259,6 +249,37 @@ const page = () => {
                 )}
               />
             </div>
+            <FormField
+              control={form.control}
+              name="employeeType"
+              render={({ field }) => (
+                <FormItem className="mb-4 w-full">
+                  <FormLabel className="block 2xl:text-lg text-blue-600 font-semibold  mb-2">
+                    Employee Type
+                  </FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger className="shadow appearance-none border mr-0 md:mr-6 placeholder:text-blue-600  rounded-lg 2xl:rounded-xl bg-emerald-300/70 w-full py-5 2xl:py-8 px-6 text-blue-700 2xl:text-lg font-semibold leading-tight focus:outline-none focus:shadow-outline">
+                        <SelectValue placeholder="rank" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {/* <SelectItem value="ceo">Ceo</SelectItem> */}
+                        <SelectItem value="manager">Manager</SelectItem>
+                        <SelectItem value="careworker">Careworker</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  {/* <FormControl>
+                      <Input
+                        placeholder="type"
+                        {...field}
+                        className="shadow appearance-none border mr-0 md:mr-6 placeholder:text-blue-600  rounded-lg 2xl:rounded-xl bg-emerald-300/70 w-full py-5 2xl:py-8 px-6 text-blue-700 2xl:text-lg font-semibold leading-tight focus:outline-none focus:shadow-outline"
+                      />
+                    </FormControl> */}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <div className="flex flex-col w-full mt-2 items-center justify-center">
               <Button
