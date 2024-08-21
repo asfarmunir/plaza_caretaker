@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -10,7 +10,6 @@ import toast from "react-hot-toast";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,6 +22,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebaseConfig";
 import { createNewEmployee } from "@/lib/cruds/employeeCrud";
 import { ColorRing } from "react-loader-spinner";
+import Cookies from "js-cookie";
 
 import {
   Select,
@@ -68,7 +68,8 @@ const formSchema = z.object({
 
 const page = () => {
   const [loading, setLoading] = useState(false);
-
+  const [currUser, setCurrUser] = useState<string | undefined>();
+  console.log("🚀 ~ page ~ currUser:", currUser);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -83,7 +84,10 @@ const page = () => {
   });
 
   const router = useRouter();
-
+  useEffect(() => {
+    const user = Cookies.get("userRole");
+    setCurrUser(user);
+  }, []);
   async function onSubmit(values: IUser) {
     setLoading(true);
     try {
@@ -266,6 +270,9 @@ const page = () => {
                         {/* <SelectItem value="ceo">Ceo</SelectItem> */}
                         <SelectItem value="manager">Manager</SelectItem>
                         <SelectItem value="careworker">Careworker</SelectItem>
+                        {currUser === "ceo" && (
+                          <SelectItem value="ceo">Ceo</SelectItem>
+                        )}
                       </SelectContent>
                     </Select>
                   </FormControl>

@@ -3,7 +3,6 @@ import Sidebar from "@/components/shared/Sidebar";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { useAuth } from "@/lib/AuthProvider";
 
 const managerLinks = [
   {
@@ -52,6 +51,10 @@ const ceoLinks = [
     name: "Total Work Hours",
     href: "/ceo/total-workhours",
   },
+  {
+    name: "Add New Employee",
+    href: "/register-employee",
+  },
 ];
 
 const carewokerLinks = [
@@ -66,7 +69,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useAuth();
   const [role, setRole] = useState<string>("");
   const [links, setLinks] = useState<{ name: string; href: string }[]>([]);
 
