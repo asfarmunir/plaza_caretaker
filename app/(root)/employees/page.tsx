@@ -63,7 +63,7 @@ export default function Page() {
     <main className="flex flex-col items-center justify-between w-full  ">
       <div className="  p-5 px-3 md:px-6 rounded-md shadow-sm w-full">
         <h2 className=" text-slate-900 font-bold text-xl border-b pb-3 w-full 2xl:text-2xl mb-5">
-          List of Registered Customers
+          List of Registered Employees
         </h2>
         <Table>
           {!employees.length && !loading && (
