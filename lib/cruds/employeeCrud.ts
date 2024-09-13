@@ -61,6 +61,7 @@ export const addWorkHoursForCareworker = async (
   careworkerId: string,
   data: {
     workHours: number;
+    customerId: string;
     date: string;
   }
 ) => {
@@ -70,6 +71,7 @@ export const addWorkHoursForCareworker = async (
     const workHoursEntry = {
       minutes: data.workHours,
       date: data.date,
+      customerId: data.customerId,
     };
 
     await updateDoc(careworkerDoc, {

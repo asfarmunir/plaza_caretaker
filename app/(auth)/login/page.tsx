@@ -57,6 +57,7 @@ const page = () => {
     const { email, password } = values;
     setLoading(true);
     setValidation("");
+    console.log("🚀 ~ onSubmit ");
 
     try {
       const loggedinUser = await signInWithEmailAndPassword(

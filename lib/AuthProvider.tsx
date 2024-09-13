@@ -22,32 +22,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      console.log("🚀 ~ unsubscribe ~ user:", user);
       setUser(user);
-      // setLoading(true);
-      // if (user) {
-      //   // console.log("AuthProvider -> user", user);
-      //   const userDoc = await getDoc(doc(db, "businesses", "admin@gmail.com"));
-      //   // console.log("AuthProvider -> userDoc", userDoc);
-      //   if (userDoc.exists()) {
-      //     const userData = userDoc.data();
-      //     const isAdmin = userData.isAdmin || false;
-      //     const extendedUser = { ...user, isAdmin };
-      //     setUser(extendedUser);
-      //   } else {
-      //     const extendedUser = { ...user, isAdmin: false };
-      //     setUser(extendedUser);
-      //   }
-      // } else {
-      //   setUser(null);
-      // }
-      // setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
-
-  console.log("AuthProvider ->logged in user", user);
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
